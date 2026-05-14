@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rich Yute XP System</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#0f0f0f;
+  color:white;
+  font-family:Arial, sans-serif;
+  padding:20px;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+}
+
+.header{
+  background:linear-gradient(145deg,#1f1f1f,#141414);
+  padding:25px;
+  border-radius:25px;
+  margin-bottom:20px;
+  box-shadow:0 0 25px rgba(0,0,0,.5);
+}
+
+.title{
+  font-size:32px;
+  font-weight:bold;
+  color:#ffd700;
+}
+
+.subtitle{
+  opacity:.7;
+  margin-top:5px;
+}
+
+.level-box{
+  margin-top:20px;
+}
+
+.level-text{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+.xp-bar{
+  width:100%;
+  height:24px;
+  background:#222;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.xp-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ff99,#00ccff);
+  transition:.4s;
+}
+
+.rank{
+  margin-top:15px;
+  font-size:18px;
+  color:#00ff99;
+  font-weight:bold;
+}
+
+.quest-card{
+  background:#171717;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+.quest-title{
+  font-size:22px;
+  margin-bottom:15px;
+  color:#ffd700;
+}
+
+.quest-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:15px;
+  margin-bottom:10px;
+  background:#242424;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  transition:.2s;
+}
+
+.quest-btn:active{
+  transform:scale(.97);
+}
+
+.reset{
+  background:#ff3b3b;
+}
+
+.fact-box{
+  background:#101010;
+  border:1px solid #2d2d2d;
+  border-radius:18px;
+  padding:16px;
+  line-height:1.5;
+  color:#e8e8e8;
+}
+
+.fact-label{
+  color:#00ff99;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.xp-popup{
+  position:fixed;
+  left:50%;
+  top:45%;
+  transform:translate(-50%,-50%);
+  font-size:42px;
+  font-weight:bold;
+  color:#00ff99;
+  opacity:0;
+  pointer-events:none;
+}
+
+.show{
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-20%) scale(.5);
+  }
+
+  30%{
+    opacity:1;
+    transform:translate(-50%,-70%) scale(1.2);
+  }
+
+  100%{
+    opacity:0;
+    transform:translate(-50%,-130%) scale(1);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="title">⚔️ Rich Yute Quest System</div>
+    <div class="subtitle">Main Character Energy Activated</div>
+
+    <div class="level-box">
+      <div class="level-text">
+        <span>Level <span id="level">1</span></span>
+        <span><span id="xp">0</span>/100 XP</span>
+      </div>
+
+      <div class="xp-bar">
+        <div class="xp-fill" id="fill"></div>
+      </div>
+
+      <div class="rank" id="rank">
+        Rank: Broke Wanderer
+      </div>
+    </div>
+  </div>
+
+  <div class="quest-card">
+    <div class="quest-title">🧠 Real Life Effect</div>
+    <div class="fact-box">
+      <div class="fact-label" id="fact-title">Your upgrade log</div>
+      <div id="fact-text">Tap any quest to see what that action is building in real life.</div>
+    </div>
+  </div>
+
+  <div class="quest-card">
+    <div class="quest-title">🔥 Daily Quests</div>
+
+    <button class="quest-btn" onclick="gainXP(20, 'workout')">
+      💪 Morning Workout (+20 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(15, 'design')">
+      🎨 Clothing Brand Design (+15 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(10, 'beats')">
+      🎧 Cook Up Beats (+10 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(10, 'study')">
+      📚 Study / Inspiration Hunt (+10 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(5, 'clean')">
+      🧹 Clean Your Space (+5 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(25, 'money')">
+      💰 Make Money Move (+25 XP)
+    </button>
+  </div>
+
+  <div class="quest-card">
+    <div class="quest-title">☠️ Boss Fights</div>
+
+    <button class="quest-btn" onclick="gainXP(40, 'distractions')">
+      🚫 Ignore Distractions (+40 XP)
+    </button>
+
+    <button class="quest-btn" onclick="gainXP(50, 'doomscroll')">
+      📵 No Doomscrolling 1 Hour (+50 XP)
+    </button>
+  </div>
+
+  <div class="quest-card">
+    <button class="quest-btn reset" onclick="resetAll()">
+      RESET CHARACTER
+    </button>
+  </div>
+
+</div>
+
+<div class="xp-popup" id="popup">
++10 XP
+</div>
+
+<script>
+
+let xp = Number(localStorage.getItem("xp")) || 0;
+let level = Number(localStorage.getItem("level")) || 1;
+
+let actionCounts = JSON.parse(localStorage.getItem("actionCounts")) || {
+  workout:0,
+  design:0,
+  beats:0,
+  study:0,
+  clean:0,
+  money:0,
+  distractions:0,
+  doomscroll:0
+};
+
+function getRank(level){
+  if(level < 5) return "Broke Wanderer";
+  if(level < 10) return "Focused Hustler";
+  if(level < 15) return "Design Demon";
+  if(level < 20) return "Money Magnet";
+  if(level < 30) return "Visionary";
+  return "Rich Yute Legend";
+}
+
+function getFact(action, count){
+  const facts = {
+    workout:[
+      "Day 1: Your chest, shoulders, triceps, legs, and core are waking up. Soreness is your body learning the new command.",
+      "Day 3: Your nervous system starts getting better at the movement. Pushups and squats may already feel less awkward.",
+      "Day 7: Blood flow, stamina, and confidence can improve. You may feel tighter in your arms, chest, legs, and core.",
+      "Day 14: Muscles may feel firmer. Your body is becoming more efficient at handling pushups and weighted squats.",
+      "Day 21: The habit starts feeling more automatic. Strength endurance is building because your body expects the work now.",
+      "Day 30: Visible changes may start showing in shoulders, arms, chest, legs, or posture if food and sleep are decent.",
+      "Day 60: This is where people may notice a real physique shift. More reps, better control, and stronger muscle tone.",
+      "Day 90: Major transformation territory. Your body has had enough repeated signal to build strength, endurance, and discipline.",
+      "Day 180: This is no longer a workout phase. It is identity-level behavior. You are becoming the type of man who trains.",
+      "Day 365: One year of consistency can completely change your body, confidence, and self-image."
+    ],
+
+    design:[
+      "Session 1: You are training your eye. Every design rep improves taste, layout instinct, and visual problem solving.",
+      "Session 3: You start spotting what feels off faster. Spacing, hierarchy, contrast, and balance become easier to judge.",
+      "Session 7: Your brand language starts forming. Repeated design work helps your clothing brand stop looking random.",
+      "Session 14: Your speed improves. You spend less time staring blankly and more time making real decisions.",
+      "Session 21: Your style gets sharper because your brain is collecting patterns from every design you touch.",
+      "Session 30: You can start building a real body of work. This is where designs become assets, not just practice.",
+      "Session 60: Your creative confidence compounds. You begin recognizing your own taste instead of copying everyone else.",
+      "Session 90: You are developing a design identity. People can start recognizing your hand in the work.",
+      "Session 180: Your brand can have a real visual universe now: graphics, drops, mockups, campaigns, and direction.",
+      "Session 365: A year of design reps can turn you into a serious creative machine with a deep archive."
+    ],
+
+    beats:[
+      "Session 1: You are warming up your ear. Rhythm, melody, drums, and vibe recognition improve with repetition.",
+      "Session 3: Your workflow starts getting smoother. You waste less time searching and more time building loops.",
+      "Session 7: Patterns become easier to hear. Drum bounce, melodies, and arrangement choices start clicking faster.",
+      "Session 14: Your sound selection improves. Choosing the right kick, snare, sample, or melody gets more instinctive.",
+      "Session 21: Beat-making starts becoming a habit instead of a random burst of motivation.",
+      "Session 30: You may have enough ideas to start building a pack, catalog, or signature sound direction.",
+      "Session 60: Your beats can start sounding more consistent because your ear has heard many more decisions.",
+      "Session 90: You are building producer stamina. Starting and finishing tracks becomes less scary.",
+      "Session 180: You could have a serious folder of usable beats if you save and organize your sessions.",
+      "Session 365: A full year of beat reps can give you a real catalog and a recognizable sound."
+    ],
+
+    study:[
+      "Session 1: You are feeding the idea engine. Inspiration gives your brain new shapes, colors, references, and moves.",
+      "Session 3: You start connecting references. Your designs and ideas get less basic because your mental library is bigger.",
+      "Session 7: Your taste sharpens. Studying strong work helps you see why certain designs, brands, and campaigns hit.",
+      "Session 14: You become harder to fool by trends. You start noticing what is timeless versus what is just noise.",
+      "Session 21: Your creative decisions become more intentional because you have more references to pull from.",
+      "Session 30: You can build moodboards, brand worlds, and concepts faster because your brain has more raw material.",
+      "Session 60: Your eye gets premium. You start seeing details regular people miss.",
+      "Session 90: Research becomes a creative weapon. You can create from strategy, not just vibes.",
+      "Session 180: Your references become a personal archive. This can shape your whole brand identity.",
+      "Session 365: A year of inspiration hunting can give you elite taste, better concepts, and deeper creative range."
+    ],
+
+    clean:[
+      "Session 1: Cleaning reduces visual noise. Less mess means your brain has fewer things screaming for attention.",
+      "Session 3: Your space starts becoming easier to work in. That lowers friction before workouts, design, or beat sessions.",
+      "Session 7: A cleaner room can make it easier to start tasks because your environment stops fighting you.",
+      "Session 14: Your space begins supporting your routine instead of sabotaging it.",
+      "Session 21: Cleaning becomes a reset button. When your mind feels scattered, your space can help pull it back.",
+      "Session 30: A month of small cleaning reps can create a more stable creative environment.",
+      "Session 60: You start protecting your workspace because you know how much it affects your mood and output.",
+      "Session 90: Your environment becomes part of your discipline system.",
+      "Session 180: You have built a cleaner default lifestyle, not just occasional emergency cleaning.",
+      "Session 365: One year of keeping your space in check can change how focused, calm, and productive you feel."
+    ],
+
+    money:[
+      "Move 1: You are training opportunity vision. Every money move teaches your brain to look for value.",
+      "Move 3: You start thinking less like a consumer and more like a seller, flipper, designer, or business owner.",
+      "Move 7: Your confidence with pricing, negotiation, and offers begins to grow.",
+      "Move 14: You become more aware of what brings cash in versus what only feels busy.",
+      "Move 21: Money habits start forming. You begin spotting small ways to create income instead of waiting around.",
+      "Move 30: You can build a real list of offers, products, services, or flips from one month of money action.",
+      "Move 60: Your business instincts sharpen. You learn what people actually pay for.",
+      "Move 90: This is where income systems can start forming: design clients, clothing drops, beat sales, or reselling.",
+      "Move 180: You are no longer just trying to make money. You are learning how to build a machine.",
+      "Move 365: A year of money moves can completely change your confidence, options, and income mindset."
+    ],
+
+    distractions:[
+      "Win 1: You just proved your attention can be protected. That is discipline in its rawest form.",
+      "Win 3: Ignoring distractions gets easier because your brain learns it does not have to chase every impulse.",
+      "Win 7: Your focus window can start getting longer. That helps workouts, design work, beats, and business moves.",
+      "Win 14: You may notice more control over your day because distractions are losing authority.",
+      "Win 21: Your brain starts trusting you more. When you say focus, you are more likely to actually focus.",
+      "Win 30: You have built a stronger attention muscle. This is huge for ADHD-style scattered energy.",
+      "Win 60: Your ability to stay with boring-but-important tasks can improve a lot.",
+      "Win 90: You become harder to knock off path. That is a serious life advantage.",
+      "Win 180: You are building rare focus in a world designed to steal it.",
+      "Win 365: One year of protecting your attention can change your career, body, money, and confidence."
+    ],
+
+    doomscroll:[
+      "Hour 1: You took your attention back. Less scrolling means more mental energy for real life.",
+      "Hour 3: Your brain gets a break from constant novelty. That can make slower tasks feel less painful.",
+      "Hour 7: You may notice less comparison, less mental clutter, and more space to think.",
+      "Hour 14: Your dopamine system gets more breathing room when you stop feeding it endless quick hits.",
+      "Hour 21: You can start craving creation more than consumption. That is a major switch.",
+      "Hour 30: Less doomscrolling can free up serious time for workouts, design, beats, and money moves.",
+      "Hour 60: Your focus and mood may feel steadier because you are not constantly spiking your attention.",
+      "Hour 90: You become more intentional with your phone instead of letting it steer your whole day.",
+      "Hour 180: You have built a stronger boundary between entertainment and your actual goals.",
+      "Hour 365: A year of controlling doomscrolling can give you hundreds of hours back."
+    ]
+  };
+
+  const milestones = [1,3,7,14,21,30,60,90,180,365];
+  let index = 0;
+
+  for(let i = 0; i < milestones.length; i++){
+    if(count >= milestones[i]){
+      index = i;
+    }
+  }
+
+  return facts[action][index];
+}
+
+function getActionName(action){
+  const names = {
+    workout:"💪 Workout Effect",
+    design:"🎨 Design Effect",
+    beats:"🎧 Beat-Making Effect",
+    study:"📚 Inspiration Effect",
+    clean:"🧹 Clean Space Effect",
+    money:"💰 Money Move Effect",
+    distractions:"🚫 Focus Effect",
+    doomscroll:"📵 Doomscroll Detox Effect"
+  };
+
+  return names[action];
+}
+
+function updateUI(){
+  document.getElementById("xp").innerText = xp;
+  document.getElementById("level").innerText = level;
+
+  document.getElementById("fill").style.width = xp + "%";
+
+  document.getElementById("rank").innerText =
+    "Rank: " + getRank(level);
+
+  localStorage.setItem("xp",xp);
+  localStorage.setItem("level",level);
+  localStorage.setItem("actionCounts", JSON.stringify(actionCounts));
+}
+
+function gainXP(amount, action){
+  xp += amount;
+
+  if(action){
+    actionCounts[action]++;
+    document.getElementById("fact-title").innerText =
+      getActionName(action) + " | Streak/Reps: " + actionCounts[action];
+
+    document.getElementById("fact-text").innerText =
+      getFact(action, actionCounts[action]);
+  }
+
+  let popup = document.getElementById("popup");
+
+  popup.innerText = "+" + amount + " XP";
+
+  popup.classList.remove("show");
+
+  void popup.offsetWidth;
+
+  popup.classList.add("show");
+
+  while(xp >= 100){
+    xp -= 100;
+    level++;
+
+    setTimeout(() => {
+      alert("🔥 LEVEL UP 🔥\nYou are now Level " + level);
+    },300);
+  }
+
+  updateUI();
+}
+
+function resetAll(){
+  xp = 0;
+  level = 1;
+
+  actionCounts = {
+    workout:0,
+    design:0,
+    beats:0,
+    study:0,
+    clean:0,
+    money:0,
+    distractions:0,
+    doomscroll:0
+  };
+
+  document.getElementById("fact-title").innerText = "Your upgrade log";
+  document.getElementById("fact-text").innerText =
+    "Tap any quest to see what that action is building in real life.";
+
+  updateUI();
+}
+
+updateUI();
+
+</script>
+
+</body>
+</html>
